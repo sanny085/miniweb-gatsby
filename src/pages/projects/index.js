@@ -1,28 +1,65 @@
 import React from 'react'
+import { Link, graphql } from 'gatsby'
 import Layout from '../../components/Layout'
+import Img from "gatsby-image"
+
 import '../../styles/projects.css'
  
-const Projects = () => {
+const Projects = ({data}) => {
+  console.log(data);
+
+  const projects = data.projects.nodes;
+  const contact = data.contact.siteMetadata.contact;
+
   return (
     <Layout>
       <div className="portfolio">
-        <h2>Portfolio</h2>
+        <h2>Our Portfolio</h2>
         <h3>Projects & Websites I've Created</h3>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illum minima maiores inventore voluptatibus quas quisquam. Neque fugiat ipsa beatae expedita sunt consequatur iure, itaque impedit repellat. Vitae vel corrupti inventore.
-        Minima nisi dicta omnis nihil doloribus corrupti, dolorum deserunt voluptatum reprehenderit sed! Ipsam ex provident, quia unde totam autem quisquam consequatur corrupti eum nihil consectetur odio, repellendus dolor eligendi dignissimos?
-        Minima placeat atque provident, id, sint adipisci enim itaque aliquam, similique blanditiis voluptatibus. Obcaecati at, odio eveniet nihil mollitia eum quos nobis eius tempora, quae nam excepturi sequi illo repellat!</p>
-      
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illum minima maiores inventore voluptatibus quas quisquam. Neque fugiat ipsa beatae expedita sunt consequatur iure, itaque impedit repellat. Vitae vel corrupti inventore.
-        Minima nisi dicta omnis nihil doloribus corrupti, dolorum deserunt voluptatum reprehenderit sed! Ipsam ex provident, quia unde totam autem quisquam consequatur corrupti eum nihil consectetur odio, repellendus dolor eligendi dignissimos?
-        Minima placeat atque provident, id, sint adipisci enim itaque aliquam, similique blanditiis voluptatibus. Obcaecati at, odio eveniet nihil mollitia eum quos nobis eius tempora, quae nam excepturi sequi illo repellat!</p>
-
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illum minima maiores inventore voluptatibus quas quisquam. Neque fugiat ipsa beatae expedita sunt consequatur iure, itaque impedit repellat. Vitae vel corrupti inventore.
-        Minima nisi dicta omnis nihil doloribus corrupti, dolorum deserunt voluptatum reprehenderit sed! Ipsam ex provident, quia unde totam autem quisquam consequatur corrupti eum nihil consectetur odio, repellendus dolor eligendi dignissimos?
-        Minima placeat atque provident, id, sint adipisci enim itaque aliquam, similique blanditiis voluptatibus. Obcaecati at, odio eveniet nihil mollitia eum quos nobis eius tempora, quae nam excepturi sequi illo repellat!</p>
-        
+          <div className="projects">
+            {projects.map(project => (
+              <Link to={"/projects/" + project.frontmatter.slug} key={project.id}>
+                <div>
+                <Img fluid={project.frontmatter.thumb.childImageSharp.fluid}/>
+                  <h3>{ project.frontmatter.title }</h3>
+                  <p>{ project.frontmatter.stack }</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <p>Like what you see? email me at {contact} for a quote!</p>
       </div>
     </Layout>
   );
 }
  
-export default Projects
+export default Projects;
+
+//export page query
+export const query = graphql`
+query ProjectsPage {
+  projects: allMarkdownRemark(sort: {order: DESC, fields: frontmatter___date}) {
+    nodes {
+      id
+      frontmatter {
+        title
+        stack
+        slug
+        thumb {
+          childImageSharp {
+            fluid {
+              ...GatsbyImageSharpFluid
+            }
+          }
+        }
+      }
+    }
+  }
+  contact: site {
+    siteMetadata {
+      contact
+    }
+  }
+}
+
+`;
