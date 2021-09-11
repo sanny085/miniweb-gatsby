@@ -32,7 +32,6 @@ const Projects = ({data}) => {
     </Layout>
   );
 }
- 
 export default Projects;
 
 //export page query
