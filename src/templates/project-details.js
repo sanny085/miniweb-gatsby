@@ -40,7 +40,3 @@ export const query = graphql`
     }
   }
   `;
-
-
-
- 
